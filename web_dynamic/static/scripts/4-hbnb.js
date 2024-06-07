@@ -1,4 +1,12 @@
 $(document).ready(function () {
+  $.get('http://127.0.0.1:5001/api/v1/status/', function (data) {
+    if (data.status === 'OK') {
+      $('#api_status').addClass('available');
+    } else {
+      $('#api_status').removeClass('available');
+    }
+  });
+
   let selectedAmenities = [];
 
   $('input[type="checkbox"]').change(function() {
@@ -22,17 +30,9 @@ $(document).ready(function () {
     $('.amenities h4').text(amenitiesNames.join(', '));
   });
 
-  $.get('http://127.0.0.1:5001/api/v1/status/', function (data) {
-    if (data.status === 'OK') {
-      $('#api_status').addClass('available');
-    } else {
-      $('#api_status').removeClass('available');
-    }
-  });
-
   let amenities = {};
 
-  function search (amenities) {
+  function search(amenities) {
     $.ajax({
       type: 'POST',
       url: 'http://127.0.0.1:5001/api/v1/places_search/',
@@ -69,5 +69,16 @@ $(document).ready(function () {
     });
   };
 
-  search(amenities);
+  search('');
+
+  $('button[type="button"]').click(function() {
+    if (selectedAmenities != '') {
+      amenities = {"amenities": selectedAmenities};
+    } else {
+      amenities = {selectedAmenities};
+    }
+    console.log(amenities);
+    $('.places').empty();
+    search(amenities);
+  });
 });

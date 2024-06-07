@@ -1,41 +1,10 @@
 $(document).ready(function () {
-  let selectedAmenities = [];
-
-  $('input[type="checkbox"]').change(function() {
-    let amenityId = $(this).data('id');
-
-    if ($(this).is(':checked')) {
-      selectedAmenities.push(amenityId);
-    } else {
-      let index = selectedAmenities.indexOf(amenityId);
-      if (index !== -1) {
-        selectedAmenities.splice(index, 1);
-      }
-    }
-
-    let amenitiesNames = [];
-    selectedAmenities.forEach(function(id) {
-      let amenityName = $('input[type="checkbox"][data-id="' + id + '"]').data('name');
-      amenitiesNames.push(amenityName);
-    });
-
-    $('.amenities h4').text(amenitiesNames.join(', '));
-  });
-
-  $.get('http://127.0.0.1:5001/api/v1/status/', function (data) {
-    if (data.status === 'OK') {
-      $('#api_status').addClass('available');
-    } else {
-      $('#api_status').removeClass('available');
-    }
-  });
-
   let amenities = {};
 
-  function search (amenities) {
+  function search(amenities) {
     $.ajax({
       type: 'POST',
-      url: 'http://127.0.0.1:5001/api/v1/places_search/',
+      url: 'http://0.0.0.0:5001/api/v1/places_search/',
       contentType: 'application/json',
       data: JSON.stringify(amenities),
       success: function (data) {
@@ -70,4 +39,10 @@ $(document).ready(function () {
   };
 
   search(amenities);
+
+  $('button[type="button"]').click(function() {
+    amenities = {"amenities": [$('.amenities h4').text()]};
+    console.log("cliked");
+    search(amenities);
+  });
 });
